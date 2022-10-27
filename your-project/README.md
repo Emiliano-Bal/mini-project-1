@@ -22,7 +22,7 @@
 
 
 
-# Código
+# Bibliotecas
 
 
 ### Import random
