@@ -41,3 +41,7 @@ https://docs.python.org/3/library/random.html
 ### Este juego fue creado bajo el modelo OOP. 
 ### Checar documentación en:
 https://www.techtarget.com/searchapparchitecture/definition/object-oriented-programming-OOP
+
+
+### En un futuro se espera que el jugador pueda tener $ disponible para poder apostarlo las veces que quiera. 
+### También se está trabajando para poder separar las cartas en caso de que sean pares. 
