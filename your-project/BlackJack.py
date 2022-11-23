@@ -1,5 +1,7 @@
 # Lo primero que haremos en este caso será import random ya la utilizaremos para mezclar la baraja. (En los juegos de cartas nunca sabes que te tocará).
 import random 
+import colorama 
+from colorama import Fore, Back, Style
 
 # Se crea la class Cards con los parametros de SUIT y VALUE, que son los 2 parámetros que tienen las cartas de juego. 
 class Card:
@@ -19,6 +21,10 @@ class deckOfCards:
 		self.deck_of_cards = []
 
 		for suit in ['♠','♥','♦', '♣']:
+			if suit == '♥':
+				suit = (Fore.RED + '♥')+ Fore.RESET
+			if suit == '♦':
+				suit = (Fore.RED + '♦')+ Fore.RESET
 			for value in range(2,11):
 				self.deck_of_cards.append(Card(suit, value))
 			for value in ['J','Q','K','A']:
@@ -65,6 +71,8 @@ class Player():
 			used_aces += 1 
 		return counter 
 
+
+
 # Se crea la clase dealerGame para definir las condiciones que se deben de cumplir para que el juego del Dealer pueda llevarse a cabo. 
 
 class dealerGame():
@@ -81,6 +89,7 @@ class dealerGame():
 		for c in self.hand:
 			print(str(c.value) + c.suit, end = ' ')
 		print('= ' + str(self.count_hand()))
+
 
 	def count_hand(self):
 		counter = 0
@@ -99,9 +108,21 @@ class dealerGame():
 		return counter 
 	
 # En esta sección empieza el juego y hay tomas de decisión para el jugador, las cuales afectarán el resultado del juego . 
-print('Player´s game: ')
+print('How much would you like to deposit?')
+player_bank = int(input())
+print('\nPlayer´s game:')
 player_answer = 'y'
-while player_answer == 'y':
+while player_answer == 'y' and player_bank > 0:
+	print(f'You have ${player_bank} in your account')
+	print('How much would you like to bet?')
+	
+	while player_bank > 0:
+		bet = int(input())
+		if bet <= player_bank:
+			print('here we go')
+			break
+		else:
+			print('You don´t have enough credits for that bet\nPlease enter a valid bet:')
 
 	p = Player('Emiliano')
 	dealer = dealerGame('Dealer')
@@ -109,7 +130,7 @@ while player_answer == 'y':
 	d.deal_one_card(p)
 	d.deal_one_card(p)
 
-	 
+
 #Player game (Se enseñan las cartas al jugador y decide si quiere pedir más o quedarse con las que tiene.)
 	p.show_hand()
 	while p.count_hand() < 21:
@@ -125,9 +146,6 @@ while player_answer == 'y':
 			print('Select a valid option between 1 or 2')
 		p.show_hand()
 
-
-
-	#Dealer game (Se enseñan las cartas del dealer y la suma de sus cartas debe ser mayor a 17 para que ya no pida más.)
 	print('Delaer´s game: ')
 	dealer = dealerGame('Dealer')
 	d = deckOfCards()
@@ -135,38 +153,46 @@ while player_answer == 'y':
 	d.deal_one_card(dealer)
 
 	dealer.show_hand()
-	while dealer.count_hand() < 17:
-		d.deal_one_card(dealer)
-		if dealer.count_hand() > 17 and dealer.count_hand() <= 21:
-			dealer.show_hand()
-		elif dealer.count_hand() > 21:
-			dealer.show_hand()
-			break
-		
+	while p.count_hand() < 21:
+		while dealer.count_hand() < 17:
+			d.deal_one_card(dealer)
+			if dealer.count_hand() > 17 and dealer.count_hand() <= 21:
+				dealer.show_hand()
+			elif dealer.count_hand() > 21:
+				dealer.show_hand()
+				break
+		break
+
+
+	#Dealer game (Se enseñan las cartas del dealer y la suma de sus cartas debe ser mayor a 17 para que ya no pida más.)
+
 # Se muestran los resultados de la partida dependiendo de las decisiones tomadas en los pasos anteriores. 
 
 	print(f'The player got {p.count_hand()}')
 	print(f'The dealer got {dealer.count_hand()}')
-	if p.count_hand() > dealer.count_hand() and dealer.count_hand() < 21:
+	if p.count_hand() > dealer.count_hand() and dealer.count_hand() < 21 and p.count_hand() <= 21:
 		print('Player Wins!')
+		winnings = bet 
+		player_bank += bet
+		print(f'You won ${winnings}!')
 	elif dealer.count_hand() > 21:
 		print('Dealer busted & player wins!')
+		winnings = bet
+		player_bank += bet
+		print(f'You won ${winnings}!')
 	elif p.count_hand() == dealer.count_hand():
-		print('Push')
+		print('Push!!')
 	else:
 		print('The house wins!')
+		losses = -bet
+		player_bank -= bet
+		print(f'You lost ${losses}!')
+	
+	print('Do you want to play again? Please enter: y for yes! & any other character for no')
+	player_answer = input().lower()
 
-	print('Do you want to play again? y/n')
-	player_answer = input(str().lower())
-
-
-
-
-'''
-cards = deckOfCards()
-for c in cards.deck_of_cards:
-	print(str(c.value)+ c.suit)
-
-Este código nos permite probar que la baraja esta siendo mezclada. 
-	'''
-
+	if player_answer != 'y':
+		print('We are sad to see you go! \nWe hope you come back soon...')
+	else:
+		print('Here we go again!!! \nPlayer´s hand: ')
+        
